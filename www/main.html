@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<!--
+    Copyright (c) 2012-2014 Adobe Systems Incorporated. All rights reserved.
+
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+     KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+-->
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="format-detection" content="telephone=no" />
+        <meta name="msapplication-tap-highlight" content="no" />
+        <!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323 -->
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
+        <!-- Style Sheets --> 
+        <link rel="stylesheet" type="text/css" media="all" href="css/reset.css" />
+        <link rel="stylesheet" type="text/css" media="all" href="css/trunk.css" />
+        <link rel="stylesheet" href="css/animate.css">
+        <link rel="stylesheet" href="css/chat.css">
+        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
+        <script type="text/javascript" language="javascript" src="js/trunk.js"></script>
+        <script type="text/javascript" src="js/rsvp-latest.min.js"></script>
+        <script type="text/javascript" src="js/firebase.js"></script>
+        <script type="text/javascript" src="js/geofire.min.js"></script>
+        <script charset="UTF-8" type="text/javascript" src="http://ecn.dev.virtualearth.net/mapcontrol/mapcontrol.ashx?v=7.0"></script>
+        
+          <title>Ping</title>
+    </head>
+        <body onload="GetMap();">
+        <div class="app">
+
+        <div class="container">
+            <div class="drawer-overlay">
+            </div>  
+            <div class="container">
+            <header class="slide">     <!-- Add "slideRight" class to items that move right when viewing Nav Drawer  -->
+                <ul id="navToggle" class="burger slide">    <!--    Add "slideRight" class to items that move right when viewing Nav Drawer  -->
+                    <li></li><li></li><li></li>
+                </ul>
+                <h1>Welcome to Ping</h1>
+            </header>
+
+            <nav class="slide">
+                <ul id="chats">
+                    <li><a href="#" onclick="javascript:goToMain();" class="active">HOME</a></li>
+<!--                     <li><a href="#">Nothing 0</a></li>
+                    <li><a href="#">Nothing 1</a></li>
+                    <li><a href="#">Nothing 2</a></li>
+                    <li><a href="#">Nothing 3</a></li>
+                    <li><a href="#">Nothing 4</a></li>
+                    <li><a href="#">Nothing 5</a></li> -->
+                </ul>
+            </nav>
+            
+            <div class="content slide">     <!--    Add "slideRight" class to items that move right when viewing Nav Drawer  -->
+                <ul class="responsive">
+                    <li id="main" class="body-section" style="width: 100%;">
+                        <div class="round-button">
+                            <div class="round-button-circle">
+                                <a onclick="javascript:pingClick();" class="round-button"></a>
+                            </div>
+                            <div id='pulse1'></div>
+                            <div id='pulse2'></div>                     
+                        </div>
+                            <div id="mapOverlay"></div>
+                            <div class="" id='mapDiv'></div>
+                    </li>
+<!--                     <li id="chat" class="body-section" style="position: fixed;">
+                        <ul id="messages"></ul>
+                        <div id="message-box">
+                            <form action="javascript:send();">
+                                <input id="text-in" type="text">
+                                <input id="submit-btn" type="submit" value="send">
+                            </form>
+                        </div>
+                    </li>
+ -->                </ul>
+            </div>
+            
+        </div>
+        </div>
+        <script type="text/javascript" src="cordova.js"></script>
+        <script type="text/javascript" src="js/index.js"></script>
+        <script type="text/javascript">
+        
+          var map;
+          var roomId;
+          var user;
+          var userAuth;
+          var geoQuery;
+          var firebase = new Firebase("https://intense-torch-7595.firebaseio.com");
+          var geofire = new GeoFire(firebase.child('locations'));
+          // var firechat = new Firechat(firebase.child('chat'), $('#firechat-wrapper'));
+          firebase.onAuth(function(authData) {
+            // Once authenticated, instantiate Firechat with our user id and user name
+            if (authData) {
+              userAuth = authData;
+              firebase.child('users').child(authData.uid).on('value', function(snapshot) {
+                var snap = snapshot.val();
+                user = snap;
+              }); 
+              firebase.child('users').child(authData.uid).child('chats').on('child_added', function(snapshot){
+                var snapVal = snapshot.val();
+                (function(roomId){
+                    firebase.child('chat').child(roomId).child('participants').on('value', function(snapshot){
+                        var snapVal = snapshot.val();
+                        if (snapVal.nickname1 !== null){
+                            var uid;
+                            if (snapVal.nickname1 === user.nickname) {
+                                uid = snapVal.nickname2;
+                            } else {
+                                uid = snapVal.nickname1;
+                            }
+                            $("#chats").append("<li><a onclick='javascript:goToChat(this);' data-roomid='"+roomId+"'>"+uid+"</a></li>");
+                        }
+                    });
+                })(snapVal);
+              });
+              $("#message-box").css('visibility', 'visible');
+            }
+          });
+
+        function goToChat(something) {
+            // firebase.child('chat').child(roomId).off('child_added');
+            if (roomId !== null && typeof roomId !== "undefined") {
+                firebase.child('chat').child(roomId).off();
+            }
+            
+            // $('#messages').empty();
+            // $("#main *").css("visibility", "hidden");
+            // $("#chat *").css("z-index", "10");
+            // $("#mapDiv").width('0px');
+            // $("#mapDiv").height('0px');
+            
+            // $("#chat").height((window.innerHeight) + 'px');
+            // $("#chat").width((window.innerWidth) + 'px');
+            // $("#chat").css('visibility', 'visible');
+            $('#main').html('\
+                <ul id="messages" style=""></ul>\
+                <div id="message-box">\
+                    <form action="javascript:send();" style="">\
+                        <input id="text-in" type="text">\
+                        <input id="submit-btn" type="submit" value="send">\
+                    </form>\
+                </div>\
+                ');
+            $('#messages').css('margin', '0');
+            $('#messages').width(window.innerWidth);
+            $('#messages').height(window.innerHeight - 63);
+            roomId = something.dataset.roomid;
+            firebase.child('chat').child(roomId).on('child_added', addMessage);
+            
+            $("#navToggle").click();
+        };
+        
+        function goToMain() {
+            // $("#chat *").css("z-index", "-10");
+            var ri = roomId;
+            if (roomId !== null && typeof roomId !== "undefined") {
+                firebase.child('chat').child(roomId).off();
+                $('#messages').empty();
+                // roomId = null;
+            }
+            // $("#chat").height('0');
+            // $("#chat").width('0');
+            // $("#chat").css('visibility', 'hidden');
+            
+            // $("#main *").css("visibility", "visible");
+            // $("#main").width('100%');
+            // $("#main").height('100%');
+            // $("#mapDiv").css('width', window.innerWidth + 'px');
+            // $("#mapDiv").css('height', window.innerHeight + 'px');
+            $('#main').html('\
+                <div class="round-button">\
+                    <div class="round-button-circle">\
+                        <a onclick="javascript:pingClick();" class="round-button"></a>\
+                    </div>\
+                    <div id="pulse1"></div>\
+                    <div id="pulse2"></div>\
+                </div>\
+                    <div id="mapOverlay"></div>\
+                    <div class="" id="mapDiv"></div>\
+                ');
+            GetMap();
+            $("#navToggle").click();
+        };
+        
+        function addMessage(snapshot) {
+            var snapVal = snapshot.val();
+            var classVal;
+            var styleVal;
+            if(snapVal.senderNick === user.nickname){
+                //Its the local user
+                classVal= ".from-me";
+                styleVal= "border-top-left-radius: 50px; border-top-right-radius: 50px; border-bottom-left-radius: 50px; border-bottom-right-radius: 50px; padding-bottom: .25em; padding-top: .25em; padding-left: 1em; padding-right: 1em; color: white; display: inline-block; background: rgb(73,155,234); /* Old browsers */ background: -moz-linear-gradient(left,  rgba(73,155,234,1) 0%, rgba(32,124,229,1) 100%); /* FF3.6+ */ background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(73,155,234,1)), color-stop(100%,rgba(32,124,229,1))); /* Chrome,Safari4+ */ background: -webkit-linear-gradient(left,  rgba(73,155,234,1) 0%,rgba(32,124,229,1) 100%); /* Chrome10+,Safari5.1+ */ background: -o-linear-gradient(left,  rgba(73,155,234,1) 0%,rgba(32,124,229,1) 100%); /* Opera 11.10+ */ background: -ms-linear-gradient(left,  rgba(73,155,234,1) 0%,rgba(32,124,229,1) 100%); /* IE10+ */ background: linear-gradient(to right,  rgba(73,155,234,1) 0%,rgba(32,124,229,1) 100%); /* W3C */ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#499bea', endColorstr='#207ce5',GradientType=1 ); /* IE6-9 */";
+            }else{
+                classVal= ".from-them";
+                styleVal= "float: right; padding-bottom: .25em; padding-top: .25em; padding-left: 1em; padding-right: 1em; color: white; display: inline-block; background: rgb(157,213,58); /* Old browsers */ background: -moz-linear-gradient(left,  rgba(157,213,58,1) 0%, rgba(161,213,79,1) 50%, rgba(128,194,23,1) 101%); /* FF3.6+ */ background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(157,213,58,1)), color-stop(50%,rgba(161,213,79,1)), color-stop(101%,rgba(128,194,23,1))); /* Chrome,Safari4+ */ background: -webkit-linear-gradient(left,  rgba(157,213,58,1) 0%,rgba(161,213,79,1) 50%,rgba(128,194,23,1) 101%); /* Chrome10+,Safari5.1+ */ background: -o-linear-gradient(left,  rgba(157,213,58,1) 0%,rgba(161,213,79,1) 50%,rgba(128,194,23,1) 101%); /* Opera 11.10+ */ background: -ms-linear-gradient(left,  rgba(157,213,58,1) 0%,rgba(161,213,79,1) 50%,rgba(128,194,23,1) 101%); /* IE10+ */ background: linear-gradient(to right,  rgba(157,213,58,1) 0%,rgba(161,213,79,1) 50%,rgba(128,194,23,1) 101%); /* W3C */ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#9dd53a', endColorstr='#80c217',GradientType=1 ); /* IE6-9 */ "; 
+            }
+            if (!snapVal.nickname1) {
+                $("#messages").append("<li><div class='msg'><div class='"+classVal+"' style='"+styleVal+"'><p>"+snapVal.senderNick+": "+snapVal.msg+"</p></div></div></li>");
+                $('#messages').animate({
+                    scrollTop: $(document).height()
+                }, 1000);
+            }
+        };
+        
+        function send() {
+            var msg = $("#text-in").val();
+            if (msg !== "") {
+                firebase.child('chat').child(roomId).push({
+                    msg: msg,
+                    senderNick: user.nickname,
+                });
+            }
+            $("#text-in").val("");
+        };
+
+        function GetMap()
+        {
+            var w = window.innerWidth;
+             $("#mapDiv").css('width', window.innerWidth);
+             $("#mapDiv").css('height', window.innerHeight - 40);
+            var mapOptions = {
+                credentials: "AnUP76Ben3qpuIVLIpxuTWXmqfT2E1JTiy7y7Ek-QzjZvnxU8t99-x6ZknDjJ6rw",
+                mapTypeId: Microsoft.Maps.MapTypeId.road,
+                zoom: '10'
+            }
+            map = new Microsoft.Maps.Map(document.getElementById("mapDiv"), mapOptions);
+                // Initialize the map
+
+            // Initialize the location provider
+            var geoLocationProvider = new Microsoft.Maps.GeoLocationProvider(map);
+            // Get the user's current location
+            geoLocationProvider.getCurrentPosition({
+                successCallback:displayCenter,
+                showAccuracyCircle: false,
+                enableHighAccuracy: true,
+            });
+
+            // navigator.geolocation.getCurrentPosition(function(position) {
+            //     position = position;
+            //     map.setView({
+            //          center: new Microsoft.Maps.Location(position.coords.latitude, position.coords.longitude),
+            //     });
+            // });
+        };
+        
+        function pingClick() {
+            //Animate
+            $('.round-button').addClass('raise');
+            $('.round-button').one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function() {
+                    $(".round-button").css("bottom", "50%");
+                    $('.round-button').addClass('animated bounceIn');
+                    $('.round-button').one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function() {
+                        $("#pulse1").css("visibility", "visible");
+                        $("#pulse2").css("visibility", "visible");                        
+                    });
+            });
+            navigator.geolocation.getCurrentPosition(function(position) {
+                // firebase.child('users').child(userAuth.uid).child('location').set({
+                //     latitude: position.coords.latitude,
+                //     longitude: position.coords.longitude,
+                // });
+                geofire.set(userAuth.uid, [position.coords.latitude, position.coords.longitude]);
+                geoQuery = geofire.query({
+                    center: [position.coords.latitude, position.coords.longitude],
+                    radius: 10
+                });
+                geoQuery.on('key_entered', function(key, location, distance){
+                    if(userAuth.uid == key){
+                        //Change pin if it's yours
+                        var pin = new Microsoft.Maps.Pushpin(new Microsoft.Maps.Location(location[0], location[1]), {icon: '/img/ping-icon-me.png'});                        
+                    }else{
+                        //Change pin if it's someone you don't know
+                        var pin = new Microsoft.Maps.Pushpin(new Microsoft.Maps.Location(location[0], location[1]), {icon: '/img/ping-icon-others.png'});                       
+                    }
+                    //Set the id of this particular ping (used in pinClick)
+                    pin.custId = key;
+                    pin.clickFlag = false;
+                    map.entities.push(pin);
+                    //map.entities.push(pinInfobox);
+                    Microsoft.Maps.Events.addHandler(pin, 'click', pinClick);
+                });
+                firebase.child('users').child(userAuth.uid).child('last-pinged').set(Firebase.ServerValue.TIMESTAMP);
+                 setTimeout(function (){
+
+                     hideOverlay();
+
+                 }, 5000); // how long do you want the delay to be? 
+            });
+        };
+
+
+        //Popup box functions (when the pin is clicked on)
+         function displayInfobox(e)
+         {
+            pinInfobox.setOptions({ visible:true });
+         }                    
+
+         function hideInfobox(e)
+         {
+            pinInfobox.setOptions({ visible: false });
+         }
+        
+        function pinClick(e) {
+            var uid = e.target.custId;
+            var showing = e.target.clickFlag;
+            var userName;
+            var prevPing;
+            if(showing == false){
+                firebase.child('users').child(uid).child('nickname').once('value', function(snap) {
+                  //Get the username
+                  userName = snap.val();
+                  if(userName != user.nickname){
+                    userName = userName+' '+'<div id="email" style="float: right; visible: false;"><input type="image" src="/img/mail-icon.png" onclick="startChat(\''+ uid +'\');"></div>';
+                  }
+                    firebase.child('users').child(uid).child('last-pinged').once('value', function(snap) {
+                        // Get the last ping
+                        prevPing = snap.val();
+
+                        //Create the infobox for the pushpin
+                        var pinInfobox = new Microsoft.Maps.Infobox(e.target.getLocation(), 
+                        {
+                            title: userName, 
+                            description: 'Last Pinged: '+convertTime(prevPing)+e.target.getLocation(), 
+                            visible: true, 
+                            offset: new Microsoft.Maps.Point(0,15),
+                        });
+                        if(pinInfobox.getVisible() == false){
+                            map.entities.push(pinInfobox);
+                            $('.Infobox').addClass('animated bounceIn');
+                        }else{
+                            
+                        }
+                    });
+                });
+//                showing = true;
+//            }else{
+//                showing = false;
+            }
+            //startChat(uid);
+        }
+
+        function startChat(otherUid) {
+            $('#email').addClass('animated bounceOutDown');
+            //var firebase = new Firebase("https://intense-torch-7595.firebaseio.com");
+            firebase.child('users').child(otherUid).child('nickname').once('value', function(snapshot){
+                var snapVal = snapshot.val();
+                //alert("clicked "+userAuth.uid+otherUid);
+                firebase.child('chat').child(userAuth.uid+otherUid).set({
+                    participants: {
+                        nickname1: user.nickname,
+                        nickname2: snapVal,
+                    },
+                });
+                firebase.child('users').child(userAuth.uid).child('chats').push(userAuth.uid+otherUid);
+                firebase.child('users').child(otherUid).child('chats').push(userAuth.uid+otherUid);
+                var btn = $("a[data-roomid='"+userAuth.uid+otherUid+"']");
+                btn.click();
+            });
+        }
+
+        function hideOverlay() {
+            $('.round-button').addClass('animated bounceOut');
+            $('#mapOverlay').addClass('animated fadeOut');
+            $('.round-button').one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function() {
+                    $('.round-button').css("visibility", "hidden");
+                    $('#mapOverlay').css("visibility", "hidden");   
+                    $("#pulse1").css("visibility", "hidden");
+                    $("#pulse2").css("visibility", "hidden");  
+            });
+        }
+
+        function displayCenter(args)
+        {
+           // Display the user location when the geo location request returns
+           //alert("The user's location is " + args.center);
+        };
+
+        function convertTime(time){
+            //Converts Unix time to readable time and data,
+            // returns a string of the time
+            if(time != null){
+                var dateVal ="/Date("+ time +")/";
+                var date = new Date( parseFloat( dateVal.substr(6 )));
+                var completeDate = (date.getMonth() + 1) + "/" + date.getDate() + "/" + date.getFullYear() + " " + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
+                return completeDate;
+            }else{
+                return "Unknown!   "
+            }
+        }
+
+        /*function onPositionReady(position) {
+            // Execute some more code with user's location
+            // For Example...
+            // Apply the position to the map
+            var location = new Microsoft.Maps.Location(position.coords.latitude,
+                position.coords.longitude);
+            map.setView({ zoom: 18, center: location });
+
+            // Add a pushpin to the map representing the current location
+            var pin = new Microsoft.Maps.Pushpin(location);
+            map.entities.push(pin);
+        }*/
+
+        </script>
+    </div>
+    </body>
+</html>

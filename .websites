@@ -1,0 +1,32 @@
+#yolo
+#hellyeah
+# 
+http://jsfiddle.net/firebase/a221m6pb/
+
+------------------OVERVIEW---------------------
+Ping- Meet people near you.. An app for broadcasting your position (incentive) in order to display the positions of others around you along with the time of when they last pinged. You can then send messages to them or ping them (just an alert) which pushes a notification to their phone. Meet people and add them to your Friends list, making them show up as Green pins instead of Red. Also block pingers so that they can't see your ping icon on the map anymore or message you or anything.
+---------------------------------------
+
+---------------------------------------------------------------
+Ping Development Priority:
+
+1- Create main css and layout, i.e where the map will go, the button to Ping will go, what it will look like, menu etc..
+
+2- Create login/registration system backend, set up handling every users positions and individual messaging system backend
+
+1- Add functionality to the Ping button to broadcast your location and then display it on the map long with others from server
+
+1- Figure out how to do tinder 's circle ping animation
+
+1- Figure out a good max range for displaying nearby pingers
+
+2- blocking system for if you don't want someone to see your location, shows as black ping icon on the blockers map instead of Red
+
+1- figure out how to color and change map icons
+
+1- Find library for messaging interface.., make it a new .html
+-----------------------------------------------------------------
+
+http://git.blivesta.com/drawer/
+
+http://codepen.io/samuelkraft/pen/Farhl/

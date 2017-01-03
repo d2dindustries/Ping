@@ -1,0 +1,214 @@
+body {
+width:100%;
+min-height:100%;
+margin:0;
+}
+
+h1,h2,h3,h4,h5,h6 {
+font-size:1.8rem;
+margin:0;
+}
+
+a {
+color:#b32017;
+text-decoration:underline;
+}
+
+p,ul,table,blockquote {
+margin:0 0 .5em;
+}
+
+table {
+border-collapse:collapse;
+}
+
+td,th {
+margin:0;
+padding:0;
+}
+
+dt {
+float:left;
+clear:both;
+margin-right:.5em;
+}
+
+dt:after {
+content:':';
+}
+
+dd {
+margin-left:0;
+}
+
+dd,dt {
+margin-bottom:.5em;
+}
+
+pre {
+font-size:14px;
+white-space:pre-wrap;
+margin-top:0;
+margin-bottom:1.5em;
+}
+
+code {
+display:inline-block;
+max-width:100%;
+overflow:auto;
+}
+
+.btn {
+display:inline;
+zoom:1;
+margin-bottom:.4rem;
+vertical-align:middle;
+cursor:pointer;
+background:#39484e;
+font-size:1.8rem;
+font-weight:700;
+line-height:1.8rem;
+color:#eaedef;
+text-align:center;
+-moz-border-radius:.4rem;
+-webkit-border-radius:.4rem;
+border-radius:.4rem;
+-moz-box-shadow:0 -.2rem 0 rgba(0,0,0,0.3) inset;
+-webkit-box-shadow:0 -.2rem 0 rgba(0,0,0,0.3) inset;
+box-shadow:0 -.2rem 0 rgba(0,0,0,0.3) inset;
+padding:1.7rem 3.2rem;
+}
+
+.btn i {
+margin-right:.2rem;
+}
+
+.btn i.icon-download {
+margin-right:.5rem;
+}
+
+.btn:hover,.btn:active,.btn.active,.btn.disabled,.btn[disabled] {
+text-decoration:none;
+background-color:#44565d;
+-moz-transition:background-color .1s linear;
+-o-transition:background-color .1s linear;
+-webkit-transition:background-color .1s linear;
+transition:background-color .1s linear;
+}
+
+.btn:active,.btn.active {
+padding-top:1.9rem;
+padding-bottom:1.5rem;
+background:#39484e;
+outline:none;
+-moz-box-shadow:0 .2rem 0 rgba(0,0,0,0.3) inset;
+-webkit-box-shadow:0 .2rem 0 rgba(0,0,0,0.3) inset;
+box-shadow:0 .2rem 0 rgba(0,0,0,0.3) inset;
+}
+
+.btn:focus {
+outline:5px auto 0;
+outline-offset:-2px;
+}
+
+.btn.disabled,.btn[disabled] {
+cursor:default;
+background-color:#e6e6e6;
+background-image:none;
+opacity:0.65;
+filter:alpha(opacity=65);
+-webkit-box-shadow:none;
+-moz-box-shadow:none;
+box-shadow:none;
+}
+
+body.-bellows .btn {
+background:#3498db;
+color:#eaedef;
+}
+
+body.-bellows .btn:hover,body.-bellows .btn:active,body.-bellows .btn.active,body.-bellows .btn.disabled,body.-bellows .btn[disabled] {
+background-color:#3d9cdd;
+}
+
+body.-bellows .btn:active,body.-bellows .btn.active {
+background-color:#2e88c5;
+}
+
+body.-magnifik .btn {
+background:#b5e8e0;
+color:#197fa3;
+}
+
+body.-magnifik .btn:hover,body.-magnifik .btn:active,body.-magnifik .btn.active,body.-magnifik .btn.disabled,body.-magnifik .btn[disabled] {
+background-color:#bdeae3;
+}
+
+body.-magnifik .btn:active,body.-magnifik .btn.active {
+background-color:#a2d0c9;
+}
+
+body.-pikabu .btn {
+background:#f0504e;
+color:#efd16e;
+}
+
+body.-pikabu .btn:hover,body.-pikabu .btn:active,body.-pikabu .btn.active,body.-pikabu .btn.disabled,body.-pikabu .btn[disabled] {
+background-color:#f15957;
+}
+
+body.-pikabu .btn:active,body.-pikabu .btn.active {
+background-color:#d84846;
+}
+
+body.-scooch .btn {
+background:#158ea1;
+color:#f0e2bc;
+}
+
+body.-scooch .btn:hover,body.-scooch .btn:active,body.-scooch .btn.active,body.-scooch .btn.disabled,body.-scooch .btn[disabled] {
+background-color:#1696aa;
+}
+
+body.-scooch .btn:active,body.-scooch .btn.active {
+background-color:#127f90;
+}
+
+body.-magnifik pre .string,body.-magnifik pre .title,body.-magnifik pre .haskell .type,body.-magnifik pre .ini .title,body.-magnifik pre .tag .value,body.-magnifik pre .css .rules .value,body.-magnifik pre .preprocessor,body.-magnifik pre .ruby .symbol,body.-magnifik pre .ruby .symbol .string,body.-magnifik pre .ruby .symbol .keyword,body.-magnifik pre .ruby .symbol .keymethods,body.-magnifik pre .ruby .instancevar,body.-magnifik pre .ruby .class .parent,body.-magnifik pre .built_in,body.-magnifik pre .sql .aggregate,body.-magnifik pre .django .template_tag,body.-magnifik pre .django .variable,body.-magnifik pre .smalltalk .class,body.-magnifik pre .javadoc,body.-magnifik pre .ruby .string,body.-magnifik pre .django .filter .argument,body.-magnifik pre .smalltalk .localvars,body.-magnifik pre .smalltalk .array,body.-magnifik pre .attr_selector,body.-magnifik pre .pseudo,body.-magnifik pre .addition,body.-magnifik pre .stream,body.-magnifik pre .envvar,body.-magnifik pre .apache .tag,body.-magnifik pre .apache .cbracket,body.-magnifik pre .tex .command,body.-magnifik pre .input_number {
+color:#b5e8e0;
+}
+
+body.-pikabu pre .string,body.-pikabu pre .title,body.-pikabu pre .haskell .type,body.-pikabu pre .ini .title,body.-pikabu pre .tag .value,body.-pikabu pre .css .rules .value,body.-pikabu pre .preprocessor,body.-pikabu pre .ruby .symbol,body.-pikabu pre .ruby .symbol .string,body.-pikabu pre .ruby .symbol .keyword,body.-pikabu pre .ruby .symbol .keymethods,body.-pikabu pre .ruby .instancevar,body.-pikabu pre .ruby .class .parent,body.-pikabu pre .built_in,body.-pikabu pre .sql .aggregate,body.-pikabu pre .django .template_tag,body.-pikabu pre .django .variable,body.-pikabu pre .smalltalk .class,body.-pikabu pre .javadoc,body.-pikabu pre .ruby .string,body.-pikabu pre .django .filter .argument,body.-pikabu pre .smalltalk .localvars,body.-pikabu pre .smalltalk .array,body.-pikabu pre .attr_selector,body.-pikabu pre .pseudo,body.-pikabu pre .addition,body.-pikabu pre .stream,body.-pikabu pre .envvar,body.-pikabu pre .apache .tag,body.-pikabu pre .apache .cbracket,body.-pikabu pre .tex .command,body.-pikabu pre .input_number {
+color:#f0504e;
+}
+
+body.-scooch pre .string,body.-scooch pre .title,body.-scooch pre .haskell .type,body.-scooch pre .ini .title,body.-scooch pre .tag .value,body.-scooch pre .css .rules .value,body.-scooch pre .preprocessor,body.-scooch pre .ruby .symbol,body.-scooch pre .ruby .symbol .string,body.-scooch pre .ruby .symbol .keyword,body.-scooch pre .ruby .symbol .keymethods,body.-scooch pre .ruby .instancevar,body.-scooch pre .ruby .class .parent,body.-scooch pre .built_in,body.-scooch pre .sql .aggregate,body.-scooch pre .django .template_tag,body.-scooch pre .django .variable,body.-scooch pre .smalltalk .class,body.-scooch pre .javadoc,body.-scooch pre .ruby .string,body.-scooch pre .django .filter .argument,body.-scooch pre .smalltalk .localvars,body.-scooch pre .smalltalk .array,body.-scooch pre .attr_selector,body.-scooch pre .pseudo,body.-scooch pre .addition,body.-scooch pre .stream,body.-scooch pre .envvar,body.-scooch pre .apache .tag,body.-scooch pre .apache .cbracket,body.-scooch pre .tex .command,body.-scooch pre .input_number {
+color:#158ea1;
+}
+
+.mos-mobifyLogo {
+width:2.4rem;
+height:2.4rem;
+margin:1.3rem 0;
+}
+
+.mos-mobifyLogo.-bellows #insideRight,.mos-mobifyLogo.-bellows #insideTop,.mos-mobifyLogo.-bellows #insideBottom,.mos-mobifyLogo.-bellows #outsideRight,.mos-mobifyLogo.-bellows #outsideTop,.mos-mobifyLogo.-bellows #outsideBottom {
+fill:#eaedef;
+}
+
+.mos-mobifyLogo.-magnifik #insideRight,.mos-mobifyLogo.-magnifik #insideTop,.mos-mobifyLogo.-magnifik #insideBottom,.mos-mobifyLogo.-magnifik #outsideRight,.mos-mobifyLogo.-magnifik #outsideTop,.mos-mobifyLogo.-magnifik #outsideBottom {
+fill:#197fa3;
+}
+
+.mos-mobifyLogo.-pikabu #insideRight,.mos-mobifyLogo.-pikabu #insideTop,.mos-mobifyLogo.-pikabu #insideBottom,.mos-mobifyLogo.-pikabu #outsideRight,.mos-mobifyLogo.-pikabu #outsideTop,.mos-mobifyLogo.-pikabu #outsideBottom {
+fill:#efd16e;
+}
+
+.mos-mobifyLogo.-scooch #insideRight,.mos-mobifyLogo.-scooch #insideTop,.mos-mobifyLogo.-scooch #insideBottom,.mos-mobifyLogo.-scooch #outsideRight,.mos-mobifyLogo.-scooch #outsideTop,.mos-mobifyLogo.-scooch #outsideBottom {
+fill:#f0e2bc;
+}
+
+@media max-width 650px{
+.btn {
+width:100%;
+}

@@ -1,0 +1,61 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset='utf-8' />
+
+    <!-- jQuery -->
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js'></script>
+
+    <!-- Firebase -->
+    <script src='https://cdn.firebase.com/js/client/2.0.2/firebase.js'></script>
+
+    <!-- Firechat -->
+    <link rel='stylesheet' href='https://cdn.firebase.com/libs/firechat/2.0.1/firechat.min.css' />
+    <script src='https://cdn.firebase.com/libs/firechat/2.0.1/firechat.min.js'></script>
+    <script type="text/javascript" src="js/firechat-ui.js"></script>
+  </head>
+  <body>
+    <div class="">
+    	<ul id="messages">
+    		
+    	</ul>
+    	<div id="chat-box" style="visibility: hidden;">
+    		<form action="javascript:send();">
+    			<input id="text-in" type="text">
+    			<input id="submit-btn" type="submit" value="send">
+    		</form>
+    	</div>
+    </div>
+    <script type='text/javascript'>
+      // Create a new Firebase reference, and a new instance of the Login client
+      var user;
+      var roomId = "1";
+      var firebase = new Firebase("https://intense-torch-7595.firebaseio.com");
+      // var firechat = new Firechat(firebase.child('chat'), $('#firechat-wrapper'));
+      firebase.onAuth(function(authData) {
+        // Once authenticated, instantiate Firechat with our user id and user name
+        if (authData) {
+          firebase.child('users').child(authData.uid).on('value', function(snapshot) {
+            var snap = snapshot.val();
+            user = snap;
+            firebase.child('chat').child(roomId).on('child_added', function(snapshot){
+            	var snapVal = snapshot.val();
+            	$("#messages").append("<li><div class='msg'><p>"+snapVal.msg+"<em> by: "+snapVal.senderNick+"</em></p></div></li>");
+            });
+          }); 
+          $("#chat-box").css('visibility', 'visible');
+        }
+      });
+      function send() {
+      	var msg = $("#text-in").val();
+      	if (msg !== "") {
+      		firebase.child('chat').child(roomId).push({
+      			msg: msg,
+      			senderNick: user.nickname,
+      		});
+      	}
+      	$("#text-in").val("");
+      };
+    </script>
+  </body>
+</html>
